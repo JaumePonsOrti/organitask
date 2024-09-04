@@ -1,0 +1,7 @@
+{
+  "name": "organitask",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
