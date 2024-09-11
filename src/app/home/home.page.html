@@ -1,20 +1,90 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-title>OrganiTask</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+      <ion-title size="large">organitask ver/crear tareas</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-label>Nombre:</ion-label>
+        <ion-input placeholder="Nombre tarea"></ion-input>
+      </ion-col>
+
+      <ion-col>
+        <ion-row>
+          <ion-label>Hora inicio:</ion-label>
+        </ion-row>
+        <ion-row>
+          <ion-button [fill]="'clear'" (click)="presentPopover($event, 'start')">{{ startTime || 'hora de inicio' }}</ion-button>
+        </ion-row>
+        <ion-popover #popover [isOpen]="isOpen" (didDismiss)="isOpen = false">
+          <ng-template>
+            <ion-content class="ion-padding">
+              <ion-datetime
+              [value]="hourHelper.calculateHours(-3)"
+              presentation="time"
+              [showDefaultButtons]="true"
+               (ionChange)="updateTime($event, 'start')">
+              </ion-datetime>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-col>
+
+      <ion-col>
+        <ion-row>
+          <ion-label>Hora fin:</ion-label>
+        </ion-row>
+        <ion-row>
+          <ion-button [fill]="'clear'" (click)="presentPopover($event, 'end')">{{ endTime || 'hora de finalización'  }}</ion-button>
+        </ion-row>
+        <ion-popover #popover1 [isOpen]="isOpenPopover1" (didDismiss)="isOpenPopover1 = false">
+          <ng-template>
+            <ion-content class="ion-padding">
+              <ion-datetime presentation="time" 
+               [value]="hourHelper.calculateHours(-1)"
+               [showDefaultButtons]="true"
+               (ionChange)="updateTime($event, 'end')">
+              </ion-datetime>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-col>
+
+      <!-- Buton para activar que se repita la tarea a diario-->
+      <!--
+        <ion-col>
+        <ion-row>
+          <ion-label>
+            Repetir:
+          </ion-label>
+        </ion-row>
+        <ion-button>
+         <ion-label>
+          A diario
+         </ion-label>
+         <ion-label>
+          Apagar
+         </ion-label>
+           
+          <ion-icon name="repeat"></ion-icon>
+        </ion-button>
+      </ion-col>
+      -->
+    
+      <ion-col>
+        <ion-button (click)="saveNewTask()">
+          <ion-icon name="save-outline"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
