@@ -28,7 +28,7 @@
           <ion-modal [keepContentsMounted]="true">
             <ng-template>
               <ion-datetime 
-               [value]="hourHelper.calculateHours(-1)"
+                [value]="hourHelper.calculateHours(-1)"
                 presentation="time"
                 id="datetime1"
                 (ionChange)="updateTime($event, 'start')"
@@ -49,9 +49,10 @@
           <ion-modal [keepContentsMounted]="true">
             <ng-template>
               <ion-datetime  
+                [value]="hourHelper.calculateHours(0)"
                 presentation="time"
                 id="datetime2"
-                (ionChange)="updateTime($event, 'start')"
+                (ionChange)="updateTime($event, 'end')"
               >
               </ion-datetime>
             </ng-template>
@@ -96,20 +97,23 @@
       <ion-col><strong>Hora de Inicio</strong></ion-col>
       <ion-col><strong>Hora de Fin</strong></ion-col>
       <ion-col>
-        <ion-label>botones empezar /terminar</ion-label>
+        <strong>botones empezar /terminar</strong>
       </ion-col>
     </ion-row>
     
-    <ion-row *ngFor="let task of tasks">
+    <ion-row *ngFor="let task of tasks ; let i = index">
       <ion-col>{{ task.name }}</ion-col>
-      <ion-col>{{ task.start_time }}</ion-col>
-      <ion-col>{{ task.end_time }}</ion-col>
+      <ion-col>{{ hourHelper.seeHours(task.start_time)  }}</ion-col>
+      <ion-col>{{hourHelper.seeHours(task.end_time)  }}</ion-col>
       <ion-col>
-        <ion-button>
-          <ion-icon name="play" color="success"></ion-icon>
+        <ion-button color="success" *ngIf="!task.started" (click)="starTask(i, task)">
+          <ion-icon name="play" ></ion-icon>
         </ion-button>
-        <ion-button>
-          <ion-icon name="stop" color="danger"></ion-icon>
+        <ion-button color="warning" *ngIf="task.started" (click)="pauseTask(i, task)">
+          <ion-icon name="pause"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" *ngIf="task.started" (click)="stopTask(i, task)">
+          <ion-icon name="stop" ></ion-icon>
         </ion-button>
       </ion-col>
     </ion-row>

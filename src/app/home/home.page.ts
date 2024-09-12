@@ -10,11 +10,12 @@ import { TaskToDO } from '../models/task';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit{
-  startTime: string = this.hourHelper.calculateHours(-1);
-  endTime: string = this.hourHelper.calculateHours(0);
+  startTime: string = new Date().toISOString();
+  endTime: string = new Date().toISOString();
   nameCtrl: FormControl = new FormControl();
   repiteDiary: boolean = true;
   tasks: TaskToDO[] = [] ;
+  makingNowTask ?: TaskToDO ;
 
   constructor(public hourHelper: HourhelperService, public memoryService: MemoryService) {}
 
@@ -50,22 +51,75 @@ export class HomePage implements OnInit{
     } finally {
 
       let task:TaskToDO = {
+        id:this.tasks.length,
         name: this.nameCtrl.value,
         start_time: this.startTime,
         end_time: this.endTime,
         diary_task: this.repiteDiary, 
-        
+        started: false,
+        time_completed: 0
       }
 
       this.memoryService.saveNewTask(task);
       this.tasks = this.memoryService.getListTasks();
       //Resetear el formulario
-      this.startTime = "";
-      this.endTime = "";
+      /*
+      this.startTime = this.hourHelper.calculateHours(-1);
+      this.endTime = this.hourHelper.calculateHours(0);
+      */
       this.nameCtrl.reset();
-
-
     }
   }  
 
+  starTask(index: number, task: TaskToDO) {
+    if(this.makingNowTask != undefined){
+      this.pauseTask(this.makingNowTask.id, this.makingNowTask);
+    }
+    
+    task.started = true;
+    task.timeStarted = new Date();
+    this.tasks[index] = task;
+    this.makingNowTask = task;
+
+  }
+
+  pauseTask(index: number, task: TaskToDO) {
+    task.started = false;
+    task.timeEnded = new Date();
+    let time:number = this.calculateTime(task)?? 0;
+    task.time_completed = time + task.time_completed;
+    task.timeStarted = undefined;
+    
+    alert ("Tiempo: " + time +" nombre: "+ task.name + "tiempo total: "+ task.time_completed);
+    this.tasks[index] = task;
+    this.makingNowTask = undefined;
+  } 
+
+  stopTask(index: number, task: TaskToDO) {
+    task.started = false;
+    task.timeEnded = new Date();
+    let time:number = this.calculateTime(task)?? 0;
+    task.time_completed = time + task.time_completed;
+    task.timeStarted = undefined;
+
+    this.memoryService.saveListMaketTasks(task);
+    this.tasks = this.tasks.filter((val, i) => i != index);
+    this.makingNowTask = undefined;
+    
+  }
+
+  calculateTime(task: TaskToDO): number | undefined {
+    if (task.timeStarted === undefined || task.timeEnded === undefined) {
+      return undefined;
+    }
+
+    const startTime = task.timeStarted.getTime();
+    const endTime = task.timeEnded.getTime();
+
+    if (isNaN(startTime) || isNaN(endTime)) {
+      return undefined;
+    }
+
+    return endTime - startTime;
+  }
 }
