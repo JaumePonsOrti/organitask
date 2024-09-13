@@ -25,7 +25,6 @@ export class HomePage implements OnInit{
 
   updateTime(event: any, type: string) {
     let timeVal = event.detail.value;
-   
     
     if (type === 'start') {
       this.startTime = timeVal;
@@ -35,8 +34,8 @@ export class HomePage implements OnInit{
   }
 
   saveNewTask() {
-    console.log("startTime, endTime, nameCtrl",this.startTime, this.endTime, this.nameCtrl.value)
     if (this.startTime === null || this.endTime === null || this.nameCtrl.value === null) {
+      
       console.error("Error: null pointer reference");
       return;
     }
@@ -49,9 +48,9 @@ export class HomePage implements OnInit{
     } catch (error) {
       console.error("Error: unhandled exception", error);
     } finally {
-
+      let id = this.tasks.length;
       let task:TaskToDO = {
-        id:this.tasks.length,
+        id:id,
         name: this.nameCtrl.value,
         start_time: this.startTime,
         end_time: this.endTime,
@@ -89,8 +88,7 @@ export class HomePage implements OnInit{
     let time:number = this.calculateTime(task)?? 0;
     task.time_completed = time + task.time_completed;
     task.timeStarted = undefined;
-    
-    alert ("Tiempo: " + time +" nombre: "+ task.name + "tiempo total: "+ task.time_completed);
+  
     this.tasks[index] = task;
     this.makingNowTask = undefined;
   } 

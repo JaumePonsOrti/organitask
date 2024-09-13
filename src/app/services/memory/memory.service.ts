@@ -17,21 +17,27 @@ export class MemoryService {
   }
 
   saveNewTask(task:TaskToDO){
+    let id = this.tasks.length;
+    task.id = id;
     this.tasks.push(task);
     this.save('tasks', this.tasks);
   }
 
-  saveListMaketTasks(tasks:TaskToDO){
-    let maketTasks = JSON.parse(localStorage.getItem("maketTask")  || '{}');
-    maketTasks[this.hourHelper.today()] = maketTasks[this.hourHelper.today()] ? maketTasks[this.hourHelper.today()] : [];
-    maketTasks[this.hourHelper.today()].push(tasks);
+  saveListMaketTasks(task:TaskToDO){
+    let maketTasks = this.getListMaketTasks();
+
+    if(maketTasks[this.hourHelper.today()] == undefined){
+      maketTasks[this.hourHelper.today()] = []
+    }
+    maketTasks[this.hourHelper.today()].push(task) ;
+  
     console.log(maketTasks);
 
-    this.save('maketTask', this.tasks);
+    this.save('maketTask', maketTasks);
   }
 
   getListMaketTasks(){
-    let maketTasks = JSON.parse(localStorage.getItem("maketTask")  || '{}');
+    let maketTasks = JSON.parse(localStorage.getItem("maketTask")  || '{}') || {};
     return maketTasks;
   }
 
@@ -41,17 +47,30 @@ export class MemoryService {
       let tasks1 = JSON.parse(localStorage.getItem('tasks') || '[]');
       let tasks = [];
       let maketTasks = this.getListMaketTasks();
-     
-      for (let i = 0; i < tasks1.length; i++) {
-        if (tasks1[i].repiteDiary === true) {
-          for (let index = 0; index < maketTasks.length; index++) {
-            const element = maketTasks[this.hourHelper.today()][index];
-            
-            if (element.id !== tasks1[i].id) {
-              tasks.push(tasks1[i]);
 
-            }
+      //Utilizaremos el siguiente mapa para guardar las tareas ya realizadas el dia de hoy 
+      let maketTasksTodayMap:any = {};
+
+      //Recorremos la lista maketTasks para agregar las tareas ya realizadas
+      if (maketTasks[this.hourHelper.today()] != undefined) {
+        let maketTasksToday = maketTasks[this.hourHelper.today()];
+
+        for (let index = 0; index < maketTasksToday.length; index++) {
+          console.log("hola index:" + index);
+          const element = maketTasksToday[index];
+
+          maketTasksTodayMap[element.id] = element;
+        }
+      }
+            
+      for (let i = 0; i < tasks1.length; i++) {
+        if (tasks1[i].diary_task === true) {
+          if (maketTasksTodayMap[tasks1[i].id] == undefined) {
+            tasks.push(tasks1[i]);
+            
           }
+      
+      
         }else {
           tasks.push(tasks1[i]);
         }
