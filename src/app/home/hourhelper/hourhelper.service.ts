@@ -87,7 +87,6 @@ export class HourhelperService {
 
   }
 
-  //este metodo sirve para una fecha por parametro convertirla a la misma fecha con la hora a las 00:00
 
 }
 
