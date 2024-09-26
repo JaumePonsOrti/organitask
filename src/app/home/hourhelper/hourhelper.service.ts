@@ -4,20 +4,18 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class HourhelperService {
-
   constructor() { }
+  //La idea de este metodo es devolver cuanquier fecha habiendole sumado los minutos correspondientes en formato isoSTRING
   calculateHours(sumar:number = 0, timeVal:any = new Date()) {
-    let object = this.prepareTimes(timeVal, sumar);
+    let object:Time = this.prepareTimes(timeVal, sumar);
     let year = object.year;
     let month = object.month;
     let day = object.day;
     let hour = object.hour;
     let minute = object.minute;
 
-    let time = + hour + ':'+ minute;
+    let timen = year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":00.000Z";
 
-    let timen = year + "-" + month + "-" + day + "T" + time + ":00.000Z";
-        
     return timen;
   }
 
@@ -31,7 +29,7 @@ export class HourhelperService {
       time =  hour-1 + ':' ;
       minute = 59;
       time = time + minute;
-    }else if(minute <10){
+    }else if(minute < 10){
       time = time +"0"+ minute;
     }else{
       time = hour + ':' ;
@@ -43,7 +41,7 @@ export class HourhelperService {
 
   }
 
-  prepareTimes(timeVal:any = new Date(), sumar:number = 0) {
+  prepareTimes(timeVal:any = new Date(), sumar:number = 0)  {
     let hour = timeVal.getHours();
     let year = timeVal.getFullYear();
     let monthNumber:number = timeVal.getMonth()+1;
@@ -57,7 +55,6 @@ export class HourhelperService {
 
     if(minuteN == 0){
       hour = hour - 1;
-      hour = hour < 10 ? '0' + hour : hour;
       minute = "" + 59;
     }else if(minuteN <10){
       minute = "0"+ minuteN;
@@ -65,13 +62,17 @@ export class HourhelperService {
       minute = minute;
     }
 
-    let time = {
+    let hourToUse:string = hour < 10 ? "0" + hour :""+ hour;
+    
+    let time:Time = {
       "year": year,
       "month": month,
       "day": day,
-      "hour": hour,
+      "hour": hourToUse,
       "minute": minute
     };
+
+    console.log("Time: ",time);
 
     return time;
 
@@ -90,3 +91,10 @@ export class HourhelperService {
 
 }
 
+export interface Time {
+  year: string;
+  month: string;
+  day: string;
+  hour: string;
+  minute: string;
+}

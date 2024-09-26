@@ -49,10 +49,10 @@
           <ion-modal [keepContentsMounted]="true">
             <ng-template>
               <ion-datetime  
-                [value]="hourHelper.calculateHours(0)"
-                presentation="time"
-                id="datetime2"
-                (ionChange)="updateTime($event, 'end')"
+                [value] = "hourHelper.calculateHours(0)"
+                presentation = "time"
+                id = "datetime2"
+                (ionChange) = "updateTime($event, 'end')"
               >
               </ion-datetime>
             </ng-template>
@@ -104,7 +104,7 @@
     <ion-row *ngFor="let task of tasks ; let i = index">
       <ion-col>{{ task.name }}</ion-col>
       <ion-col>{{ hourHelper.seeHours(task.start_time)  }}</ion-col>
-      <ion-col>{{hourHelper.seeHours(task.end_time)  }}</ion-col>
+      <ion-col>{{ hourHelper.seeHours(task.end_time)  }}</ion-col>
       <ion-col>
         <ion-button color="success" *ngIf="!task.started" (click)="starTask(i, task)">
           <ion-icon name="play" ></ion-icon>
